@@ -25,7 +25,7 @@ module.exports = function (grunt) {
     'use strict';
 
     // load dependencies
-    require('load-grunt-tasks')(grunt, {pattern: ['grunt-contrib-*', 'grunt-targethtml', 'grunt-usemin']});
+    require('load-grunt-tasks')(grunt, {pattern: ['grunt-contrib-*', 'grunt-targethtml', 'grunt-usemin', 'grunt-jslint']});
     grunt.loadTasks('tasks');
 
     var common = require("./tasks/lib/common")(grunt);
@@ -291,6 +291,24 @@ module.exports = function (grunt) {
                 jshintrc: '.jshintrc'
             }
         },
+        jslint: {
+            client: {
+                src: ['src/**/*.js'],
+                exclude: ['src/thirdparty/**/*.js', 'src/widgets/**/*.js'],
+                directives: {
+                    "vars":     true,
+                    "plusplus": true,
+                    "devel":    true,
+                    "nomen":    true,
+                    "white":    true,
+                    "maxerr":   50
+                },
+                options: {
+                    errorsOnly: false, // only display errors
+                    failOnError: true, // defaults to true
+                }
+            }
+        },
         shell: {
             repo: grunt.option("shell-repo") || "../brackets-shell",
             mac: "<%= shell.repo %>/installer/mac/staging/<%= pkg.name %>.app",
@@ -303,7 +321,7 @@ module.exports = function (grunt) {
     grunt.registerTask('install', ['write-config', 'less']);
 
     // task: test
-    grunt.registerTask('test', ['jshint:all', 'jasmine']);
+    grunt.registerTask('test', ['jslint', 'jshint:all', 'jasmine']);
 //    grunt.registerTask('test', ['jshint:all', 'jasmine', 'jasmine_node']);
 
     // task: set-sprint
